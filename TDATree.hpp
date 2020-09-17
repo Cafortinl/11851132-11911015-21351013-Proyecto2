@@ -11,16 +11,20 @@ class TDATree : public Object{
         vector<TreeNode*> nodes;
     public:
         TDATree();
+        TDATree(string);
         ~TDATree();
         TreeNode* getParent(int);
-        TreeNode* getLefmosttChild(int);
+        TreeNode* getLefmosttChild(TreeNode*);
         TreeNode* getNextChild(TreeNode*);
         string getTag(int);
-        TreeNode* create(string, vector<TreeNode*>);
+        void create(string, vector<TDATree*>);
         void clear();
         void print(TreeNode*);
         bool equals(Object*);
         string toString();
         TreeNode* getRoot();
+        vector<TreeNode*> getNodes();
+        void addNode(TreeNode*);
+        void addNodes(vector<TreeNode*>);
 };
 #endif
