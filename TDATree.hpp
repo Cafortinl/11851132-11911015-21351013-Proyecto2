@@ -19,7 +19,6 @@ class TDATree : public Object{
         string getTag(int);
         void create(string, vector<TDATree*>);
         void clear();
-        void print(TreeNode*);
         bool equals(Object*);
         string toString();
         TreeNode* getRoot();

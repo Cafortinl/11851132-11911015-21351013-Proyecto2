@@ -1,7 +1,71 @@
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <vector>
+#include "TDATree.hpp"
 
 using namespace std;
+
+//Método que imprime el árbol en orden posterior
+void postOrder(TreeNode* n) {
+	for (int i = 0; i < n->getChildren().size(); i++) {//Procesando los hijos de n
+		postOrder(n->getChild(i));
+		cout << ',';
+	}
+	cout << n->getTag();//Imprimiendo n
+}
+
+//Método que imprime el árbol en orden simétrico
+void inOrder(TreeNode* n) {
+	if (n->getChildren().size() != 0) {//Procesando el hijo de la izquierda de n si existe
+		inOrder(n->getChild(0));
+		cout << ',';
+	}
+	cout << n->getTag();//Imprimiendo n
+	for (int i = 1; i < n->getChildren().size(); i++) {//Procesando los hermanos de n
+		cout << ',';
+		inOrder(n->getChild(i));
+	}
+}
+
+//Método que imprime el árbol en orden previo
+void preOrder(TreeNode* n) {
+	cout << n->getTag();//Imprimir n
+	if (n->getChildren().size() != 0) {//Validando si n tiene hijos
+		for (int i = 0; i < n->getChildren().size(); i++) {//Procesando los hijos de n
+			cout << ',';
+			TreeNode* t = n->getChild(i);
+			preOrder(t);
+			t = nullptr;
+			delete t;//Liberando memoria
+		}
+	}
+}
+
+
+//Método que revisa si un string es un string vacío
+bool isEmpty(string x) {
+	for (int i = 0; i < x.size(); i++) {
+		if (x[i] != '\t')
+			return false;
+	}
+	return true;
+}
+
+//Método que retorna un vector de string con las etiquetas que se encuentran en un string
+vector<string> returnTags(string x) {
+	vector<string> texto;
+	int pos = 0;
+	for (int i = 0; i < x.size(); i++) {
+		if (x[i] == ',') {
+			texto.push_back(x.substr(pos, i - pos));
+			pos = i + 1;
+		}
+	}
+	if (x.substr(pos, x.size() - pos) != "")
+		texto.push_back(x.substr(pos, x.size() - pos));
+	return texto;
+}
 
 //Método que valida que la entrada es del tipo de dato correcto (entero)
 int validInput() {
@@ -37,21 +101,88 @@ void showMenu(int x) {
 
 //Método que ejecuta las opciones de árboles
 void TreeOptions() {
+	TDATree* tree = nullptr;
 	int opcion = 0;
 	do {
 		showMenu(2);
 		opcion = validInput();
 		switch (opcion) {
 			case 1: {//Leer árbol de un archivo
+				ifstream file;
+				string nombre, linea;
+				int times;
+				vector<string> lineas;//Vector que contiene las líneas del archivo
+				vector<TDATree*> arboles;//Vector que contiene los árboles formados
+				cout << "Ingrese el nombre del archivo en el que está guardado el árbol (no es necesario agregarle la extensión): ";
+				cin.ignore();
+				getline(cin, nombre);
+				file.open(nombre + ".txt", ios::in);
+				if (file) {//Si se tuvo éxito al abrir el archivo
+					cout << "El archivo se abrió exitósamente" << endl;
+					getline(file, linea, '\n');
+					times = stoi(linea);//Determinando el número de lineas que se debem leer
+					for (int j = 0; j < times; j++) {
+						getline(file, linea, '\n');
+						if (isEmpty(linea))//Revisando si la linea está vacía
+							linea = "";
+						lineas.push_back(linea);//Agregando la línea al vector de líneas
+					}
+					file.close();
+					for (int i = lineas.size() - 1; i >= 0; i--) {//Creando los árboles
+						if (lineas[i] != "") {//Revisando si la linea no está vacía
+							TDATree* tr = nullptr;//Puntero a TDATree que servirá para agregar árboles al vector de árboles
+							vector<TDATree*> aux;//Vector de árboles auxiliares. Se manda como argumento para el método crea
+							for (int j = 0; j < returnTags(lineas[i]).size(); j++) {//Creando los árboles que se formarán parte del árbol
+								bool exists = false;//Bool que revisa si el tag del árbol creado ya existe
+								if (arboles.size() != 0) {
+									for (int k = 0; k < arboles.size(); k++) {
+										if (arboles[k]->getRoot()->getTag() == returnTags(lineas[i])[j]) {//Revisando si ya existe un árbol con la etiqueta dada
+											tr = arboles[k];//Igualando tr al árbol que tiene la etiqueta dada
+											exists = true;
+											arboles.erase(arboles.begin() + k);
+											break;
+										}
+									}
+								}
+								if (!exists)//Si no existe un árbol con la etiqueta dada
+									tr = new TDATree(returnTags(lineas[i])[j]);//tr será un nuevo árbol
+								aux.push_back(tr);//Agregando tr al vector auxiliar
+							}
+							tr = new TDATree;//tr es un nuevo árbol para poder agregarle los árboles del vector aux
+							tr->create(to_string(i), aux);//Agregando los vectores en aux como hijos de tr
+							arboles.push_back(tr);//Agregando tr a arboles
+						}
+					}
+					tree = arboles[0];
+					arboles.clear();
+				}
+				else
+					cout << "No se pudo abrir el archivo" << endl;
 				break;
 			}
 			case 2: {//Imprimir preorder
+				if (tree) {
+					preOrder(tree->getRoot());
+					cout << endl;
+				}
+				else
+					cout << "No ha abierto ningun árbol" << endl;
 				break;
 			}
 			case 3: {//Imprimir in order
+				if (tree) {
+					inOrder(tree->getRoot());
+					cout << endl;
+				}else
+					cout << "No ha abierto ningun árbol" << endl;
 				break;
 			}
 			case 4: {//Imprimir postorder
+				if (tree) {
+					postOrder(tree->getRoot());
+					cout << endl;
+				}else
+					cout << "No ha abierto ningun árbol" << endl;
 				break;
 			}
 			case 5: {//Codificador de Huffman
@@ -67,7 +198,9 @@ void TreeOptions() {
 				cout << "La opción ingresada no es válida." << endl;
 			}
 		}
+		cout << endl;
 	} while (opcion != 7);
+	delete tree;
 }
 
 //Método que ejecuta las opciones de grafos

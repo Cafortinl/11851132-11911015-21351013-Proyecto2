@@ -9,6 +9,7 @@ TDATree::TDATree(){
 
 TDATree::TDATree(string t){
     root = new TreeNode(t, nullptr);
+    nodes.push_back(root);
 }
 
 TDATree::~TDATree(){
@@ -90,16 +91,12 @@ void TDATree::clear(){
     root = nullptr;
 }
 
-void TDATree::print(TreeNode* v){
-   
-}
-
 bool TDATree::equals(Object *){
-
+    return false;
 }
 
 string TDATree::toString(){
-
+    return root->getTag();
 }
 
 //Método que retorna la raiz del árbol

@@ -71,5 +71,5 @@ bool TreeNode::equals(Object* x){
 }
 
 string TreeNode::toString(){
-    
+    return tag;
 }
