@@ -139,12 +139,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Arista.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="TDATree.cpp" />
     <ClCompile Include="TreeNode.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Arista.h" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="TDATree.hpp" />
     <ClInclude Include="TreeNode.hpp" />
