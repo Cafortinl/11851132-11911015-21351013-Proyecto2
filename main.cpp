@@ -416,6 +416,7 @@ void GraphOptions() {
 				grafo = TDAGrafo(cantAristas, aristas);
 			
 				cout << "Grafo cargado exitosamente!!!!!"<<endl;
+				cout << endl;
 				archivo = true;
 
 				break;
