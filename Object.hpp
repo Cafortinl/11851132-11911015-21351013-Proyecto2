@@ -2,6 +2,8 @@
 #define OBJECT_HPP
 #include <string>
 
+//Carlos Fortín
+
 using namespace std;
 
 class Object{

@@ -1,6 +1,8 @@
 #include "TreeNode.hpp"
 #include <iostream>
 
+//Carlos Fortín
+
 TreeNode::TreeNode(){
     parent = nullptr;
 }
@@ -72,4 +74,12 @@ bool TreeNode::equals(Object* x){
 
 string TreeNode::toString(){
     return tag;
+}
+
+int TreeNode::getFreq() {//Delia Rivera
+    return freq;
+}
+
+char TreeNode::getChar() {//Delia Rivera
+    return ch;
 }

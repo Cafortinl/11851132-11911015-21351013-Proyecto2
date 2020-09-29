@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Arista.h" />
+    <ClInclude Include="Huffman.h" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="TDAGrafo.h" />
     <ClInclude Include="TDATree.hpp" />

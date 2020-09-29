@@ -7,11 +7,12 @@
 #include "Arista.h"
 #include<sstream>
 #include <climits>
+#include "Huffman.h"
 
 using namespace std;
 
 //Método que imprime el árbol en orden posterior
-void postOrder(TreeNode* n) {
+void postOrder(TreeNode* n) {//Delia Rivera
 	for (int i = 0; i < n->getChildren().size(); i++) {//Procesando los hijos de n
 		postOrder(n->getChild(i));
 		cout << ',';
@@ -20,7 +21,7 @@ void postOrder(TreeNode* n) {
 }
 
 //Método que imprime el árbol en orden simétrico
-void inOrder(TreeNode* n) {
+void inOrder(TreeNode* n) {//Carlos Fortín
 	if (n->getChildren().size() != 0) {//Procesando el hijo de la izquierda de n si existe
 		inOrder(n->getChild(0));
 		cout << ',';
@@ -33,7 +34,7 @@ void inOrder(TreeNode* n) {
 }
 
 //Método que imprime el árbol en orden previo
-void preOrder(TreeNode* n) {
+void preOrder(TreeNode* n) {//Carlos Fortín
 	cout << n->getTag();//Imprimir n
 	if (n->getChildren().size() != 0) {//Validando si n tiene hijos
 		for (int i = 0; i < n->getChildren().size(); i++) {//Procesando los hijos de n
@@ -48,7 +49,7 @@ void preOrder(TreeNode* n) {
 
 
 //Método que revisa si un string es un string vacío
-bool isEmpty(string x) {
+bool isEmpty(string x) {//Carlos Fortín
 	for (int i = 0; i < x.size(); i++) {
 		if (x[i] != '\t')
 			return false;
@@ -57,7 +58,7 @@ bool isEmpty(string x) {
 }
 
 //Método que retorna un vector de string con las etiquetas que se encuentran en un string
-vector<string> returnTags(string x) {
+vector<string> returnTags(string x) {//Carlos Fortín
 	vector<string> texto;
 	int pos = 0;
 	for (int i = 0; i < x.size(); i++) {
@@ -71,8 +72,33 @@ vector<string> returnTags(string x) {
 	return texto;
 }
 
+string returnHuffmanSize(string x) {//Delia Rivera
+	string num = "";
+	for (int i = 0; i < x.size(); i++) {
+		if (x[i] == ',') {
+			num = x.substr(0, i);
+			break;
+		}
+	}
+	return num;
+}
+
+vector<string> returnHuffmanTags(string x) {//Delia Rivera
+	vector<string> texto;
+	int pos = 0;
+	for (int i = 0; i < x.size(); i++) {
+		if (x[i] == ';') {
+			texto.push_back(x.substr(pos, i - pos));
+			pos = i + 1;
+		}
+	}
+	if (x.substr(pos, x.size() - pos) != "")
+		texto.push_back(x.substr(pos, x.size() - pos));
+	return texto;
+}
+
 //Método que valida que la entrada es del tipo de dato correcto (entero)
-int validInput() {
+int validInput() {//Carlos Fortín
 	int input;
 	cin >> input;
 	while (cin.fail()) {
@@ -85,7 +111,7 @@ int validInput() {
 }
 
 //Método que muestra los menú del programa
-void showMenu(int x) {
+void showMenu(int x) {//Carlos Fortín
 	switch (x) {
 		case 1: {//Muestra el menú principal
 			cout << "Menú Principal\n1. Algoritmos sobre Árboles\n2. Algoritmos sobre Grafos\n3. Salir" << endl;
@@ -111,7 +137,7 @@ void TreeOptions() {
 		showMenu(2);
 		opcion = validInput();
 		switch (opcion) {
-			case 1: {//Leer árbol de un archivo
+			case 1: {//Leer árbol de un archivo     Carlos Fortín
 				ifstream file;
 				string nombre, linea;
 				int times;
@@ -164,7 +190,7 @@ void TreeOptions() {
 					cout << "No se pudo abrir el archivo" << endl;
 				break;
 			}
-			case 2: {//Imprimir preorder
+			case 2: {//Imprimir preorder  Carlos Fortín
 				if (tree) {
 					preOrder(tree->getRoot());
 					cout << endl;
@@ -173,7 +199,7 @@ void TreeOptions() {
 					cout << "No ha abierto ningun árbol" << endl;
 				break;
 			}
-			case 3: {//Imprimir in order
+			case 3: {//Imprimir in order   Carlos Fortín
 				if (tree) {
 					inOrder(tree->getRoot());
 					cout << endl;
@@ -181,7 +207,7 @@ void TreeOptions() {
 					cout << "No ha abierto ningun árbol" << endl;
 				break;
 			}
-			case 4: {//Imprimir postorder
+			case 4: {//Imprimir postorder  Delia Rivera
 				if (tree) {
 					postOrder(tree->getRoot());
 					cout << endl;
@@ -189,10 +215,115 @@ void TreeOptions() {
 					cout << "No ha abierto ningun árbol" << endl;
 				break;
 			}
-			case 5: {//Codificador de Huffman
+			case 5: {//Codificador de Huffman  Delia Rivera
+				ifstream file;
+				string nombre, texto;
+				cout << "Ingrese el nombre del archivo en el que está guardado el Texto (no es necesario agregarle la extensión): ";
+				cin.ignore();
+				getline(cin, nombre);
+				file.open(nombre + ".txt", ios::in);
+				if (file) {
+					file >> texto;
+					Huffman h;
+					h.buildHuffmanTree(texto);
+				}
+				else
+					cout << "No se pudo abrir el archivo" << endl;
 				break;
 			}
-			case 6: {//Decodificador de Huffman
+			case 6: {//Decodificador de Huffman  Delia Rivera
+				ifstream file;
+				string nombre, linea;
+				int times;
+				vector<string> lineas;//Vector que contiene las líneas del archivo
+				vector<TDATree*> arboles;//Vector que contiene los árboles formados
+				cout << "Ingrese el nombre del archivo en el que está guardado el árbol (no es necesario agregarle la extensión): ";
+				cin.ignore();
+				getline(cin, nombre);
+				file.open(nombre + ".txt", ios::in);
+				if (file) {//Si se tuvo éxito al abrir el archivo
+					getline(file, linea, '\n');
+					times = stoi(linea);//Determinando el número de lineas que se debem leer
+					for (int j = 0; j < times; j++) {
+						getline(file, linea, '\n');
+						if (isEmpty(linea))//Revisando si la linea está vacía
+							linea = "";
+						lineas.push_back(linea);//Agregando la línea al vector de líneas
+					}
+					file.close();
+					for (int i = lineas.size() - 1; i >= 0; i--) {//Creando los árboles
+						if (lineas[i] != "") {//Revisando si la linea no está vacía
+							TDATree* tr = nullptr;//Puntero a TDATree que servirá para agregar árboles al vector de árboles
+							vector<TDATree*> aux;//Vector de árboles auxiliares. Se manda como argumento para el método crea
+							for (int j = 0; j < returnHuffmanTags(lineas[i]).size(); j++) {//Creando los árboles que se formarán parte del árbol
+								bool exists = false;//Bool que revisa si el tag del árbol creado ya existe
+								if (arboles.size() != 0) {
+									for (int k = 0; k < arboles.size(); k++) {
+										//cout << arboles[k]->getRoot()->getTag() << " = " << returnHuffmanTags(lineas[i])[j][0] << endl;
+										if (returnHuffmanSize(arboles[k]->getRoot()->getTag()) == returnHuffmanSize(returnHuffmanTags(lineas[i])[j])) {//Revisando si ya existe un árbol con la etiqueta dada
+											tr = arboles[k];//Igualando tr al árbol que tiene la etiqueta dada
+											exists = true;
+											arboles.erase(arboles.begin() + k);
+											break;
+										}
+									}
+								}
+								if (!exists)//Si no existe un árbol con la etiqueta dada
+									tr = new TDATree(returnHuffmanTags(lineas[i])[j]);//tr será un nuevo árbol
+								aux.push_back(tr);//Agregando tr al vector auxiliar
+							}
+							string nTag = "0,0";
+							for (int j = 0; j < lineas.size(); j++) {
+								vector<string> parentTag = returnHuffmanTags(lineas[j]);
+								for (int k = 0; k < parentTag.size(); k++) {
+									//cout << parentTag[k][0] << "=" << to_string(i)[0] << endl;
+									if (returnHuffmanSize(parentTag[k]) == to_string(i)) {
+										nTag = parentTag[k];
+										//cout << "entro" << endl;
+										break;
+									}
+								}
+							}
+							tr = new TDATree;//tr es un nuevo árbol para poder agregarle los árboles del vector aux
+							tr->create(nTag, aux);//Agregando los vectores en aux como hijos de tr
+							arboles.push_back(tr);//Agregando tr a arboles
+						}
+					}
+					cout << endl;
+					//Abriendo el archivo con el texto codificado
+					ifstream text;
+					string nombreTexto, code, decod = "";
+					cout << "Ingrese el nombre del archivo en el que está guardado el texto codificado (no es necesario agregarle la extensión): ";
+					//cin.ignore();
+					getline(cin, nombreTexto);
+					text.open(nombreTexto + ".txt", ios::in);
+					if (text) {
+						getline(text, code);
+						cout << code << endl;
+						TreeNode* dec = arboles[0]->getRoot();
+						//decodificar
+						for (int i = 0; i <= code.size(); i++) {
+							if (dec->getChildren().size() != 0) {
+								if (code[i] == '0') {
+									dec = dec->getChild(0);
+								}
+								else if (code[i] == '1') {
+									dec = dec->getChild(1);
+								}
+							}
+							else {
+								decod += dec->getTag()[dec->getTag().size() - 1];
+								i--;
+								dec = arboles[0]->getRoot();
+							}
+						}
+						cout << decod << endl;
+					}
+					else
+						cout << "No se pudo abrir el archivo" << endl;
+				}
+				else
+					cout << "No se pudo abrir el archivo" << endl;
 				break;
 			}
 			case 7: {//Regresar al menú principal

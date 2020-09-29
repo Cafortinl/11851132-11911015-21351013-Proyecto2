@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+//Carlos Fortín
+
 using namespace std;
 
 class TreeNode : public Object{
@@ -12,7 +14,10 @@ class TreeNode : public Object{
         string tag;
         TreeNode* parent;
         vector<TreeNode*> children;
+        int freq;//Delia Rivera
+        char ch;//Delia Rivera
     public:
+        TreeNode* left, * right;//Delia Rivera
         TreeNode();
         TreeNode(string, TreeNode*);
         ~TreeNode();
@@ -26,6 +31,8 @@ class TreeNode : public Object{
         string getTag();
         bool equals(Object*);
         string toString();
+        int getFreq();//Delia Rivera
+        char getChar();//Delia Rivera
 };
 #endif
 
