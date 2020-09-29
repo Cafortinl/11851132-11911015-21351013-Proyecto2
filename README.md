@@ -7,11 +7,10 @@
 ## Índice
 
 1. Introducción
-2. Instalar y compilar
-3. TDA's
+2. TDA's
     - Árbol
     - Grafo
-4. Menú principal
+3. Menú principal
     - Menú TDA Árbol
         - Opciones del árbol
     - Menú TDA Grafo
@@ -20,14 +19,6 @@
 # Introducción
 Este proyecto fue desarrollado para poder trabajar con los tipos de datos abstractos
 árbol y grafo. Usted podrá ver la implementación de estos tipos de datos en opciones que van desde leer un árbol de un archivo hasta usar los algoritmos de Prim, Kruskal y Floyd.
-
-# Instalar y compilar
-
-![Compilación](./images/compilar.gif)
-
-Para instalar y compilar el proyecto simplemente debe escribir en la terminal: 
-
-
 
 # TDA's
 ## Árbol
