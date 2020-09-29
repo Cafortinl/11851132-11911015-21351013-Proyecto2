@@ -19,6 +19,8 @@ public:
     void setDireccion(int);
     void setPeso(int);
     string toString();
+    bool equals(Object*);
+    
 
 private:
     int origen;
