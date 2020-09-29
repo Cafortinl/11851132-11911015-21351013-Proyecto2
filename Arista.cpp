@@ -34,12 +34,13 @@ void Arista::setPeso(int dpeso) {
 	peso = dpeso; 
 }
 string Arista::toString(){
-	string ret = "Origen: ";
+	string ret = "";
 	ret += to_string(origen);
-	ret += ", ";
+	ret += ",";
 	ret += to_string(direccion);
-	ret += ", ";
+	ret += ";";
 	ret += to_string(peso);
+	ret += "  ";
 
 	return ret;
 }

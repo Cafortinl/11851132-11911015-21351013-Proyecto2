@@ -11,11 +11,11 @@ public:
     TDAGrafo();
     TDAGrafo(int, vector<Arista>);
 
-    int** matrizAD();
+    int** matrizAD(vector<Arista>);
     void listaAD(vector<Arista>);
-    void prim();
-    int** floyd();
-    void kruskal();
+    void prim(int**);
+    int** floyd(int**);
+    void kruskal(vector<Arista>);
     void printMatriz(int**);
     bool equals(Object*);
     string toString();

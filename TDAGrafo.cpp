@@ -10,8 +10,8 @@ TDAGrafo::TDAGrafo(int cant, vector<Arista>aristasDadas) {
 	cantAristas = cant;
 	aristas = aristasDadas;
 }
-
-int** TDAGrafo::matrizAD() {
+// creador de matrices adyacentes
+int** TDAGrafo::matrizAD(vector<Arista>aristas) {
 	if (aristas.size()==NULL) {
 		cout << "No hay aristas";
 	}else{
@@ -28,17 +28,44 @@ int** TDAGrafo::matrizAD() {
 			matriz[k][j] = (aristas.at(i)).getPeso();
 		}
 		//check this before
-		matrizAristas = matriz;
+		//matrizAristas = matriz;
+		return matriz;
 	}
-	return matrizAristas;
+	
 }
-void TDAGrafo::listaAD(vector<Arista>) {
-
+void TDAGrafo::listaAD(vector<Arista>aristasdadas) {
+	cout << "SIZE: " << aristasdadas.size()<<endl;
+	vector<vector<Arista>>listaAD;
+	vector<Arista>temp;
+	int origentemp=0;
+	for (int i = 0; i <aristasdadas.size();i++) {
+		//cout << "ORIGENTEMP: " << origentemp;
+		//cout << "   "<<aristasdadas[i].getOrigen();
+		if(origentemp== aristasdadas[i].getOrigen()){
+			temp.push_back(aristasdadas[i]);
+		}else if(origentemp!=aristasdadas[i].getOrigen()){
+			origentemp++;
+			listaAD.push_back(temp);
+			temp.clear();
+			temp.push_back(aristasdadas[i]);
+			
+		}
+	}
+	listaAD.push_back(temp);
+	temp.clear();
+	//cout << "SIZE: " << listaAD.size()<<endl;
+	for (int i = 0; i <listaAD.size();i++) {
+		cout << i << " : ";
+		for (int j = 0; j < listaAD[i].size(); j++) {
+			cout << listaAD[i][j].toString();
+		}
+		cout << endl;
+	}
+	
 }
-void TDAGrafo::prim() {
-	/*vector<Arista>pesosbajos=aristas;
-	//for (int i = 0; i < aristas.size(); i++) {
-		//Arista arista= Arista();
+void TDAGrafo::prim(int**matrizdada) {
+	vector<Arista>pesosbajos=aristas;
+	//Bubblesort para poder conseguir un vector de menores a mayores
 	for (int i = 0; i < aristas.size() - 1; i++) {
 		for (int j = 0; j < aristas.size() - i - 1; j++) {
 			if (pesosbajos.at(j).getPeso() > pesosbajos.at(j + 1).getPeso()) {
@@ -57,65 +84,64 @@ void TDAGrafo::prim() {
 			}
 		}
 	}
+	//vector para conjunto solucion
 	vector<Arista>ConjuntoS;
 	vector<int>visitados;
 	int cont = 0;
-	while (ConjuntoS.size()==0) {
-		if (pesosbajos.at(cont).getDireccion() != -1 || pesosbajos.at(cont).getPeso() != 0) {
-			ConjuntoS.push_back(pesosbajos.at(cont));
+	for (int i = 0; i < pesosbajos.size();i++) {
+		//recorremos el vector bubblesorted para poder hacer los pesos 0 y que se pueda hacer 
+		if (pesosbajos[i].getOrigen() == pesosbajos[i].getDireccion()) {
+			//si esta en la diagonal principal que su peso sea 0
+			ConjuntoS.push_back(pesosbajos[i]);
+
+		}else if (visitados.size()==0) {
+			//si es el primer visitado que se presentase anadira a los visitados el origen y la direccion
+			ConjuntoS.push_back(pesosbajos[i]);
 			visitados.push_back(pesosbajos.at(cont).getOrigen());
 			visitados.push_back(pesosbajos.at(cont).getDireccion());
-		}
-		else {
-			cont++;
-		}
-	}
-	for (int i = 0; i < visitados.size();i++) {
-		if (pesosbajos.at(cont).getOrigen()) {
 
+		}else if (visitados.size() == cantAristas) {
+			//si ya hay suficientes visitados
+			pesosbajos[i].setPeso(0);
+			ConjuntoS.push_back(pesosbajos[i]);
 		}
-	}*/
-	vector<Arista*> cs;
-	int vertice = 0;
-	//bool visit[cantAristas];
-	vector<bool>visit;
-	//int aux[cantAristas];
-	vector<int>aux;
-	int cont = 0;
-	for (int i = 0; i < cantAristas; i++) {
-		visit[i] = false;
-		aux[i] = matrizAristas[0][i];
-	}
-	visit[vertice] = true;
-
-	while (cont < cantAristas) {
-		int minimum = INT32_MAX;
-		int pos = -1;
-		//Buscando la arista más pequeña en aux
-		for (int i = 0; i < cantAristas; i++) {
-			if (aux[i] < minimum && !visit[i]) {
-				minimum = aux[i];
-				pos = i;
-			}
-		}
-		if (pos > -1) {
-			visit[pos] = true;
-			Arista* temp = new Arista(vertice, pos, aux[pos]);
-			cs.push_back(temp);
-			cont++;
-			//Actualizando aux
-			for (int i = 0; i < cantAristas; i++) {
-				if (!visit[i]) {
-					aux[i] = min(aux[i], matrizAristas[pos][i]);
+		else if (visitados.size()>0) {
+			bool origen = false;
+			bool direccion = false;
+			for (int j = 0; j < visitados.size();j++) {
+				if (pesosbajos[i].getOrigen() == visitados[j]) {
+					origen = true;
+				}
+				if (pesosbajos[i].getDireccion()==visitados[j]) {
+					direccion = true;
 				}
 			}
-			vertice = pos;
-		}
-	}
-	
+			if (origen==true && direccion==true) {
+				pesosbajos[i].setPeso(0);
+				ConjuntoS.push_back(pesosbajos[i]);
 
+			}else {
+				ConjuntoS.push_back(pesosbajos[i]);
+				if (origen==true) {
+					
+					visitados.push_back(pesosbajos[i].getDireccion());
+				}
+				else if (direccion==true) {
+					visitados.push_back(pesosbajos[i].getOrigen());
+				}
+				if (direccion == false && origen == false) {
+					visitados.push_back(pesosbajos[i].getDireccion());
+				}
+
+			}
+		}
+		
+	}
+	int** matrizConjunto = matrizAD(ConjuntoS);
+	printMatriz(matrizConjunto);
+	
 }
-int** TDAGrafo::floyd() {
+int** TDAGrafo::floyd(int** matrizdada) {
 	int** matrizFloyd;
 	matrizFloyd = new int*[cantAristas];
 	for (int i = 0; i < cantAristas; i++)
@@ -126,8 +152,8 @@ int** TDAGrafo::floyd() {
 		for (int i = 0; i <cantAristas;i++) {
 			for (int j = 0; j <cantAristas;j++) {
 				
-				if (matrizAristas[i][j]> matrizAristas[i][k]+matrizAristas[k][j]) {
-					matrizAristas[i][j] = matrizAristas[i][k] + matrizAristas[k][j];
+				if (matrizdada[i][j]> matrizdada[i][k]+matrizdada[k][j]) {
+					matrizdada[i][j] = matrizdada[i][k] + matrizdada[k][j];
 				}
 				//else {
 					//matrizAristas[i][j] = matrizAristas[i][j];
@@ -135,9 +161,106 @@ int** TDAGrafo::floyd() {
 			}
 		}
 	}
-	return matrizAristas;
+	return matrizdada;
 }
-void TDAGrafo::kruskal() {
+void TDAGrafo::kruskal(vector<Arista>aristasdadas) {
+	vector<Arista>pesosbajos = aristasdadas;
+	//Bubblesort para poder conseguir un vector de menores a mayores
+	for (int i = 0; i < aristasdadas.size() - 1; i++) {
+		for (int j = 0; j < aristasdadas.size() - i - 1; j++) {
+			if (pesosbajos.at(j).getPeso() > pesosbajos.at(j + 1).getPeso()) {
+				//swap a la forma de bubblesort
+				int temp_origen = pesosbajos.at(j).getOrigen();
+				int temp_direccion = pesosbajos.at(j).getDireccion();
+				int temp_peso = pesosbajos.at(j).getPeso();
+
+				pesosbajos.at(j).setOrigen(pesosbajos.at(j + 1).getOrigen());
+				pesosbajos.at(j).setDireccion(pesosbajos.at(j + 1).getDireccion());
+				pesosbajos.at(j).setPeso(pesosbajos.at(j + 1).getPeso());
+
+				pesosbajos.at(j + 1).setOrigen(temp_origen);
+				pesosbajos.at(j + 1).setDireccion(temp_direccion);
+				pesosbajos.at(j + 1).setPeso(temp_peso);
+			}
+		}
+	}
+	//vector para conjunto solucion
+	vector<Arista>ConjuntoS;
+	vector<int>visitados;
+	int cont = 0;
+	for (int i = 0; i < pesosbajos.size(); i++) {
+		//recorremos el vector bubblesorted para poder hacer los pesos 0 y que se pueda hacer 
+		if (pesosbajos[i].getOrigen() == pesosbajos[i].getDireccion()) {
+			//si esta en la diagonal principal que su peso sea 0
+			ConjuntoS.push_back(pesosbajos[i]);
+
+		}
+		else if (visitados.size() == 0) {
+			//si es el primer visitado que se presentase anadira a los visitados el origen y la direccion
+			ConjuntoS.push_back(pesosbajos[i]);
+			visitados.push_back(pesosbajos.at(cont).getOrigen());
+			visitados.push_back(pesosbajos.at(cont).getDireccion());
+
+		}
+		else if (visitados.size() == cantAristas) {
+			//si ya hay suficientes visitados
+			pesosbajos[i].setPeso(0);
+			ConjuntoS.push_back(pesosbajos[i]);
+		}
+		else if (visitados.size() > 0) {
+			bool origen = false;
+			bool direccion = false;
+			for (int j = 0; j < visitados.size(); j++) {
+				if (pesosbajos[i].getOrigen() == visitados[j]) {
+					origen = true;
+				}
+				if (pesosbajos[i].getDireccion() == visitados[j]) {
+					direccion = true;
+				}
+			}
+			if (origen == true && direccion == true) {
+				pesosbajos[i].setPeso(0);
+				ConjuntoS.push_back(pesosbajos[i]);
+
+			}
+			else {
+				ConjuntoS.push_back(pesosbajos[i]);
+				if (origen == true) {
+
+					visitados.push_back(pesosbajos[i].getDireccion());
+				}
+				else if (direccion == true) {
+					visitados.push_back(pesosbajos[i].getOrigen());
+				}
+				if (direccion == false && origen == false) {
+					visitados.push_back(pesosbajos[i].getDireccion());
+				}
+
+			}
+		}
+
+	}
+
+	//bubblesort para poder hacerlo 
+	vector<vector<Arista>>vectorkruskal;
+	vector<Arista>temp;
+	for (int i = 0; i < cantAristas;i++) {
+		for (int j = 0; j < ConjuntoS.size();j++) {
+			if (i== ConjuntoS[j].getOrigen() && ConjuntoS[j].getPeso()>0) {
+				temp.push_back(ConjuntoS[j]);
+			}
+		}
+		vectorkruskal.push_back(temp);
+		temp.clear();
+	}
+	for (int i = 0; i < vectorkruskal.size(); i++) {
+		cout << i << " : ";
+		for (int j = 0; j < vectorkruskal[i].size(); j++) {
+			cout << vectorkruskal[i][j].toString();
+		}
+		cout << endl;
+	}
+
 
 }
 void TDAGrafo::printMatriz(int**matriz) {

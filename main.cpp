@@ -211,6 +211,8 @@ void TreeOptions() {
 void GraphOptions() {
 	int opcion = 0;
 	TDAGrafo grafo = TDAGrafo();
+	vector<Arista>aristas;
+	int cantAristas = 0;
 	//TDAGrafo grafo = TDAGrafo();
 	do {
 		showMenu(3);
@@ -219,8 +221,8 @@ void GraphOptions() {
 			case 1: {//Leer grafo de un archivo
 				ifstream file;
 				string nombre, linea;
-				vector<Arista>aristas;
-				int cantAristas=0;
+				
+				
 				vector<string>lineas;
 				vector<string>numeros;
 
@@ -281,9 +283,9 @@ void GraphOptions() {
 					}	
 				}
 				//cout << "SIZE YA TU SABES: " << aristas.size() << endl;
-				for (int i = 0; i < aristas.size(); i++){
-					cout << aristas[i].toString() << endl;
-				}
+				//for (int i = 0; i < aristas.size(); i++){
+					//cout << aristas[i].toString() << endl;
+				//}
 				grafo = TDAGrafo(cantAristas, aristas);
 			
 				cout << "Grafo cargado exitosamente!!!!!"<<endl;
@@ -291,19 +293,28 @@ void GraphOptions() {
 				break;
 			}
 			case 2: {//Prim
+				int** matrizAD = grafo.matrizAD(aristas);
+				grafo.printMatriz(matrizAD);
+				cout << endl;
+				cout << endl;
+				grafo.prim(matrizAD);
 				break;
 			}
 			case 3: {//Kruskal
+				grafo.listaAD(aristas);
+				cout << endl;
+				cout << endl;
+				grafo.kruskal(aristas);
 				break;
 			}
 			case 4: {//Floyd
-				int** matrizAD=grafo.matrizAD();
+				int** matrizAD=grafo.matrizAD(aristas);
 				cout << "La matriz de adyacencia es:"<<endl;
 				grafo.printMatriz(matrizAD);
 				cout << endl;
 				cout << endl;
 				cout << "La matriz de floyd es: " << endl;
-				int** matrizfloyd = grafo.floyd();
+				int** matrizfloyd = grafo.floyd(matrizAD);
 				grafo.printMatriz(matrizfloyd);
 
 
