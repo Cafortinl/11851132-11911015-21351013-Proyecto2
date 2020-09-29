@@ -13,7 +13,7 @@ public:
 
     int** matrizAD(vector<Arista>);
     void listaAD(vector<Arista>);
-    void prim(int**);
+    void prim(vector<Arista>);
     int** floyd(int**);
     void kruskal(vector<Arista>);
     void printMatriz(int**);

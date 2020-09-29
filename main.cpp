@@ -344,12 +344,13 @@ void GraphOptions() {
 	TDAGrafo grafo = TDAGrafo();
 	vector<Arista>aristas;
 	int cantAristas = 0;
+	bool archivo = false;
 	//TDAGrafo grafo = TDAGrafo();
 	do {
 		showMenu(3);
 		opcion = validInput();
 		switch (opcion) {
-			case 1: {//Leer grafo de un archivo
+			case 1: {//Leer grafo de un archivo Guillermo Espinal
 				ifstream file;
 				string nombre, linea;
 				
@@ -375,10 +376,9 @@ void GraphOptions() {
 				}else {
 					cout << "Archivo no encontrado" << endl;
 				}
-				//cout << "SIZE:" << lineas.size()<<endl;
-				for (int i = 0; i < lineas.size();i++) {
+				
+				for (int i = 0; i < lineas.size();i++) {//tokenizer para los grafos 
 					string frag = lineas.at(i);
-					//cout << i<<"   "<<frag<<endl;
 					istringstream ss(frag);
 					string token;
 					int cont = 0;
@@ -413,45 +413,58 @@ void GraphOptions() {
 						}
 					}	
 				}
-				//cout << "SIZE YA TU SABES: " << aristas.size() << endl;
-				//for (int i = 0; i < aristas.size(); i++){
-					//cout << aristas[i].toString() << endl;
-				//}
 				grafo = TDAGrafo(cantAristas, aristas);
 			
 				cout << "Grafo cargado exitosamente!!!!!"<<endl;
+				archivo = true;
 
 				break;
 			}
-			case 2: {//Prim
-				int** matrizAD = grafo.matrizAD(aristas);
-				grafo.printMatriz(matrizAD);
-				cout << endl;
-				cout << endl;
-				grafo.prim(matrizAD);
+			case 2: {//Prim Guillermo Espinal
+				if (archivo==true) {
+					int** matrizAD = grafo.matrizAD(aristas);
+					grafo.printMatriz(matrizAD);
+					cout << endl;
+					cout << endl;
+					grafo.prim(aristas);
+					
+				}
+				else {
+					cout << "No se a leido ni cargado ni un grafo" << endl;
+				}
 				break;
 			}
-			case 3: {//Kruskal
-				grafo.listaAD(aristas);
-				cout << endl;
-				cout << endl;
-				grafo.kruskal(aristas);
+			case 3: {//Kruskal Guillermo Espinal
+				if (archivo==true) {
+					grafo.listaAD(aristas);
+					cout << endl;
+					cout << endl;
+					grafo.kruskal(aristas);
+				}
+				else {
+					cout << "No se a leido ni cargado ni un grafo" << endl;
+				}
+				
 				break;
 			}
-			case 4: {//Floyd
-				int** matrizAD=grafo.matrizAD(aristas);
-				cout << "La matriz de adyacencia es:"<<endl;
-				grafo.printMatriz(matrizAD);
-				cout << endl;
-				cout << endl;
-				cout << "La matriz de floyd es: " << endl;
-				int** matrizfloyd = grafo.floyd(matrizAD);
-				grafo.printMatriz(matrizfloyd);
-
-
+			case 4: {//Floyd Guillermo Espinal
+				if (archivo==true) {
+					int** matrizAD = grafo.matrizAD(aristas);
+					cout << "La matriz de adyacencia es:" << endl;
+					grafo.printMatriz(matrizAD);
+					cout << endl;
+					cout << endl;
+					cout << "La matriz de floyd es: " << endl;
+					int** matrizfloyd = grafo.floyd(matrizAD);
+					grafo.printMatriz(matrizfloyd);
+				}
+				else {
+					cout << "No se a leido ni cargado ni un grafo" << endl;
+				}
 				break;
 			}
 			case 5: {//Regresar al menú principal
+				archivo = false;
 				break;
 			}
 			default: {

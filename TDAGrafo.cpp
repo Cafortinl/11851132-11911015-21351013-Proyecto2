@@ -27,20 +27,17 @@ int** TDAGrafo::matrizAD(vector<Arista>aristas) {
 			int j = (aristas.at(i)).getDireccion();
 			matriz[k][j] = (aristas.at(i)).getPeso();
 		}
-		//check this before
-		//matrizAristas = matriz;
+		
 		return matriz;
 	}
 	
 }
-void TDAGrafo::listaAD(vector<Arista>aristasdadas) {
+void TDAGrafo::listaAD(vector<Arista>aristasdadas) {//metodo para crear una lista de adyacencia y print
 	cout << "SIZE: " << aristasdadas.size()<<endl;
 	vector<vector<Arista>>listaAD;
 	vector<Arista>temp;
 	int origentemp=0;
 	for (int i = 0; i <aristasdadas.size();i++) {
-		//cout << "ORIGENTEMP: " << origentemp;
-		//cout << "   "<<aristasdadas[i].getOrigen();
 		if(origentemp== aristasdadas[i].getOrigen()){
 			temp.push_back(aristasdadas[i]);
 		}else if(origentemp!=aristasdadas[i].getOrigen()){
@@ -53,7 +50,6 @@ void TDAGrafo::listaAD(vector<Arista>aristasdadas) {
 	}
 	listaAD.push_back(temp);
 	temp.clear();
-	//cout << "SIZE: " << listaAD.size()<<endl;
 	for (int i = 0; i <listaAD.size();i++) {
 		cout << i << " : ";
 		for (int j = 0; j < listaAD[i].size(); j++) {
@@ -63,7 +59,7 @@ void TDAGrafo::listaAD(vector<Arista>aristasdadas) {
 	}
 	
 }
-void TDAGrafo::prim(int**matrizdada) {
+void TDAGrafo::prim(vector<Arista>aristas) {//metodo para hacer el algoritmo de prim mediante matriz de adyacencia
 	vector<Arista>pesosbajos=aristas;
 	//Bubblesort para poder conseguir un vector de menores a mayores
 	for (int i = 0; i < aristas.size() - 1; i++) {
@@ -141,7 +137,7 @@ void TDAGrafo::prim(int**matrizdada) {
 	printMatriz(matrizConjunto);
 	
 }
-int** TDAGrafo::floyd(int** matrizdada) {
+int** TDAGrafo::floyd(int** matrizdada) {//metodo para hacer el algoritmo de floyd mediante matriz de adyancencia
 	int** matrizFloyd;
 	matrizFloyd = new int*[cantAristas];
 	for (int i = 0; i < cantAristas; i++)
@@ -163,7 +159,7 @@ int** TDAGrafo::floyd(int** matrizdada) {
 	}
 	return matrizdada;
 }
-void TDAGrafo::kruskal(vector<Arista>aristasdadas) {
+void TDAGrafo::kruskal(vector<Arista>aristasdadas) {//metodo para hacer el algoritmo de kruskal mediante matriz de adyacencia
 	vector<Arista>pesosbajos = aristasdadas;
 	//Bubblesort para poder conseguir un vector de menores a mayores
 	for (int i = 0; i < aristasdadas.size() - 1; i++) {
@@ -241,7 +237,7 @@ void TDAGrafo::kruskal(vector<Arista>aristasdadas) {
 
 	}
 
-	//bubblesort para poder hacerlo 
+	//creara un vector de vectores para hacer una lista de adyacencia y print de un solo
 	vector<vector<Arista>>vectorkruskal;
 	vector<Arista>temp;
 	for (int i = 0; i < cantAristas;i++) {
@@ -260,10 +256,9 @@ void TDAGrafo::kruskal(vector<Arista>aristasdadas) {
 		}
 		cout << endl;
 	}
-
-
 }
-void TDAGrafo::printMatriz(int**matriz) {
+
+void TDAGrafo::printMatriz(int**matriz) {//metodo para poder hacer el print de una matriz 
 	for (int i = 0; i < cantAristas; i++) {
 		for (int j = 0; j < cantAristas; j++) {
 			if (matriz[i][j]==1000) {
