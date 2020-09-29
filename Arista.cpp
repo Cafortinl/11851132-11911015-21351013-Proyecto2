@@ -34,14 +34,17 @@ void Arista::setPeso(int dpeso) {
 	peso = dpeso; 
 }
 string Arista::toString(){
-	string ret = " ";
-	ret += origen;
-	ret += ",";
-	ret += direccion;
-	ret += ",";
-	ret += peso;
-	return ret;
+	string ret = "Origen: ";
+	ret += to_string(origen);
+	ret += ", ";
+	ret += to_string(direccion);
+	ret += ", ";
+	ret += to_string(peso);
 
+	return ret;
+}
+bool Arista::equals(Object*lol) {
+	return true;
 }
 
 Arista::~Arista() {

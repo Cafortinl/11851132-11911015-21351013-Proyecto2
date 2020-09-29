@@ -3,6 +3,10 @@
 #include <string>
 #include <vector>
 #include "TDATree.hpp"
+#include "TDAGrafo.h"
+#include "Arista.h"
+#include<sstream>
+#include <climits>
 
 using namespace std;
 
@@ -206,11 +210,84 @@ void TreeOptions() {
 //Método que ejecuta las opciones de grafos
 void GraphOptions() {
 	int opcion = 0;
+	TDAGrafo grafo = TDAGrafo();
+	//TDAGrafo grafo = TDAGrafo();
 	do {
 		showMenu(3);
 		opcion = validInput();
 		switch (opcion) {
 			case 1: {//Leer grafo de un archivo
+				ifstream file;
+				string nombre, linea;
+				vector<Arista>aristas;
+				int cantAristas=0;
+				vector<string>lineas;
+				vector<string>numeros;
+
+				cout << "Ingrese el nombre del archivo: " << endl;
+				getline(cin, nombre);
+				getline(cin, nombre);
+				file.open(nombre + ".txt", ios::in);
+				if (file) {
+					cout << "Se ha encontrado y abierto el archivo." << endl;
+					getline(file, linea, '\n');
+					cantAristas = stoi(linea);
+					for (int j = 0; j < cantAristas; j++) {
+						getline(file, linea, '\n');
+						if (isEmpty(linea))//Revisando si la linea está vacía
+							linea = "";
+						lineas.push_back(linea);//Agregando la línea al vector de líneas
+					}
+					file.close();
+				}else {
+					cout << "Archivo no encontrado" << endl;
+				}
+				//cout << "SIZE:" << lineas.size()<<endl;
+				for (int i = 0; i < lineas.size();i++) {
+					string frag = lineas.at(i);
+					//cout << i<<"   "<<frag<<endl;
+					istringstream ss(frag);
+					string token;
+					int cont = 0;
+					while (getline(ss,token,';')) {
+						//numeros.push_back(token);
+						istringstream ss2(token);
+						string numerosseparados;
+						while (getline(ss2, numerosseparados, ',')) {
+							numeros.push_back(numerosseparados);
+						}
+						Arista arista = Arista();
+						arista.setOrigen(i);
+						if (stoi(numeros[0])==-1 && stoi(numeros[1])==-1) {
+							arista.setDireccion(i);
+							arista.setPeso(0);//numeros[1]
+						}
+						else if (stoi(numeros[0]) == -1 && stoi(numeros[1]) == 0) {
+							arista.setDireccion(cont);
+							arista.setPeso(1000);
+						}
+						else {
+							arista.setDireccion(stoi(numeros[0]));
+							arista.setPeso(stoi(numeros[1]));
+						}
+						aristas.push_back(arista);
+						numeros.clear();
+						if (cont== cantAristas-1) {
+							cont = 0;
+						}
+						else {
+							cont++;
+						}
+					}	
+				}
+				//cout << "SIZE YA TU SABES: " << aristas.size() << endl;
+				for (int i = 0; i < aristas.size(); i++){
+					cout << aristas[i].toString() << endl;
+				}
+				grafo = TDAGrafo(cantAristas, aristas);
+			
+				cout << "Grafo cargado exitosamente!!!!!"<<endl;
+
 				break;
 			}
 			case 2: {//Prim
@@ -220,6 +297,16 @@ void GraphOptions() {
 				break;
 			}
 			case 4: {//Floyd
+				int** matrizAD=grafo.matrizAD();
+				cout << "La matriz de adyacencia es:"<<endl;
+				grafo.printMatriz(matrizAD);
+				cout << endl;
+				cout << endl;
+				cout << "La matriz de floyd es: " << endl;
+				int** matrizfloyd = grafo.floyd();
+				grafo.printMatriz(matrizfloyd);
+
+
 				break;
 			}
 			case 5: {//Regresar al menú principal
